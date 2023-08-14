@@ -24,7 +24,7 @@ class ConstraintInterface(metaclass=ABCMeta):
                 callable(__subclass.get_neq_constraint) or NotImplemented)
 
     @abstractmethod
-    def get_eq_constraints(self) -> Tuple[List[List[np.ndarray]], List[np.ndarray]]:
+    def get_eq_constraint(self) -> Tuple[List[List[np.ndarray]], List[np.ndarray]]:
         """Get equality constraints to optimizer instance."""
         raise NotImplementedError
 
@@ -40,7 +40,7 @@ class FullyInvestConstraint(ConstraintInterface):
     def __init__(self, tickers: List[str]) -> None:
         self._tickers = tickers
 
-    def get_eq_constraints(self) -> Tuple[List[List[np.ndarray]], List[np.ndarray]]:
+    def get_eq_constraint(self) -> Tuple[List[List[np.ndarray]], List[np.ndarray]]:
         n = len(self._tickers)
         return [[np.ones(n).T, np.zeros(n).T, np.zeros(n).T]], [1]
 
@@ -58,7 +58,7 @@ class AccountingConstraint(ConstraintInterface):
         self._tickers = tickers
         self._x0 = x0
 
-    def get_eq_constraints(self) -> Tuple[List[List[np.ndarray]], List[np.ndarray]]:
+    def get_eq_constraint(self) -> Tuple[List[List[np.ndarray]], List[np.ndarray]]:
         n = len(self._tickers)
         return [[np.eye(n), np.eye(n), -np.eye(n)]], [self._x0.T]
 
@@ -72,7 +72,7 @@ class TurnoverConstraint(ConstraintInterface):
         self._tickers = tickers
         self._turnover_limit = turnover_limit
 
-    def get_eq_constraints(self) -> Tuple[List[List[np.ndarray]], List[np.ndarray]]:
+    def get_eq_constraint(self) -> Tuple[List[List[np.ndarray]], List[np.ndarray]]:
         return [], []
 
     def get_neq_constraint(self) -> Tuple[List[List[np.ndarray]], List[np.ndarray]]:
@@ -89,7 +89,7 @@ class IndexDeviateConstraint(ConstraintInterface):
         self._idx = idx
         self._idx_deviate = idx_deviate
 
-    def get_eq_constraints(self) -> Tuple[List[List[np.ndarray]], List[np.ndarray]]:
+    def get_eq_constraint(self) -> Tuple[List[List[np.ndarray]], List[np.ndarray]]:
         return [], []
 
     def get_neq_constraint(self) -> Tuple[List[List[np.ndarray]], List[np.ndarray]]:
@@ -109,13 +109,13 @@ class TradeNotionalConstraint(ConstraintInterface):
     def __init__(self, tickers: List[str]) -> None:
         self._tickers = tickers
 
-    def get_eq_constraints(self) -> Tuple[List[List[np.ndarray]], List[np.ndarray]]:
+    def get_eq_constraint(self) -> Tuple[List[List[np.ndarray]], List[np.ndarray]]:
+        return [], []
+
+    def get_neq_constraint(self) -> Tuple[List[List[np.ndarray]], List[np.ndarray]]:
         n = len(self._tickers)
         return [
             [np.zeros((n, n)), -np.eye(n),
              np.zeros((n, n))],
             [np.zeros((n, n)), np.zeros((n, n)), -np.eye(n)],
         ], [np.zeros(n), np.zeros(n)]
-
-    def get_neq_constraint(self) -> Tuple[List[List[np.ndarray]], List[np.ndarray]]:
-        return [], []

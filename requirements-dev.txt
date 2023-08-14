@@ -6,4 +6,7 @@ yapf
 isort
 
 matplotlib == 3.7.2
+jupyter_contrib_nbextensions
 notebook
+
+yfinance

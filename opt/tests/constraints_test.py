@@ -14,7 +14,7 @@ tickers = ['A', 'B']
 def test_fully_invest_constraint():
     fi = FullyInvestConstraint(tickers=tickers)
 
-    x, y = fi.get_eq_constraints()
+    x, y = fi.get_eq_constraint()
     assert len(x) == len(y) == 1
     x0, x1, x2 = x[0]
     assert_array_equal(np.ones(2).T, x0)
@@ -31,7 +31,7 @@ def test_accounting_constraint():
     x0 = np.array([100, 1000])
     a = AccountingConstraint(tickers=tickers, x0=x0)
 
-    x, y = a.get_eq_constraints()
+    x, y = a.get_eq_constraint()
     assert len(x) == len(y) == 1
     x0, x1, x2 = x[0]
     assert_array_equal(np.eye(2), x0)
@@ -44,7 +44,7 @@ def test_turnover_constraint():
     turnover_limit = 0.1
     t = TurnoverConstraint(tickers=tickers, turnover_limit=turnover_limit)
 
-    x, y = t.get_eq_constraints()
+    x, y = t.get_eq_constraint()
     assert_array_equal([], x)
     assert_array_equal([], y)
 
@@ -62,7 +62,7 @@ def test_index_deviate_constraint():
     idx = np.array([100, 1000])
     id_cstr = IndexDeviateConstraint(tickers=tickers, idx=idx, idx_deviate=idx_deviate)
 
-    x, y = id_cstr.get_eq_constraints()
+    x, y = id_cstr.get_eq_constraint()
     assert_array_equal([], x)
     assert_array_equal([], y)
 
@@ -84,7 +84,7 @@ def test_index_deviate_constraint():
 def test_trade_notional_constraint():
     tn = TradeNotionalConstraint(tickers=tickers)
 
-    x, y = tn.get_eq_constraints()
+    x, y = tn.get_neq_constraint()
     assert len(x) == len(y) == 2
     x0, x1, x2 = x[0]
     assert_array_equal(np.zeros((2, 2)), x0)
@@ -94,6 +94,6 @@ def test_trade_notional_constraint():
     assert_array_equal(np.zeros(2), y0)
     assert_array_equal(np.zeros(2), y1)
 
-    x, y = tn.get_neq_constraint()
+    x, y = tn.get_eq_constraint()
     assert_array_equal([], x)
     assert_array_equal([], y)

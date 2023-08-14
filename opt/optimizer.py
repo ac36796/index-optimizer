@@ -27,12 +27,14 @@ class Optimizer:
         # initial position
         self._x0: Optional[np.ndarray] = None
         self._signal: Optional[np.ndarray] = None
-        self._P: List[List[np.ndarray]] = None
-        self._A: List[List[np.ndarray]] = None
-        self._G: List[List[np.ndarray]] = None
-        self._q: List[np.ndarray] = None
-        self._b: List[np.ndarray] = None
-        self._h: List[np.ndarray] = None
+        self._P: List[List[np.ndarray]] = []
+        self._A: List[List[np.ndarray]] = []
+        self._G: List[List[np.ndarray]] = []
+        self._q: List[np.ndarray] = []
+        self._b: List[np.ndarray] = []
+        self._h: List[np.ndarray] = []
+
+        self._init_covariance()
 
     def _init_covariance(self) -> None:
         n = len(self._tickers)
@@ -57,7 +59,7 @@ class Optimizer:
 
     def add_constraints(self, constraints: List[ConstraintInterface]) -> Optimizer:
         for cstr in constraints:
-            a, b = cstr.get_eq_constraints()
+            a, b = cstr.get_eq_constraint()
             self._A += a
             self._b += b
 
@@ -69,11 +71,12 @@ class Optimizer:
     def reset(self) -> None:
         self._x0 = None
         self._signal = None
-        self._A = None
-        self._G = None
-        self._q = None
-        self._b = None
-        self._h = None
+        self._A = []
+        self._G = []
+        self._q = []
+        self._b = []
+        self._h = []
+        return self
 
     def solve(self) -> np.ndarray:
         P, q = matrix(np.block(self._P)), matrix(np.block(self._q))
