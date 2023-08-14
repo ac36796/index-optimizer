@@ -1,5 +1,9 @@
 -r requirements.txt
 
 pytest
+flake8
+yapf
+isort
+
 matplotlib == 3.7.2
 notebook
