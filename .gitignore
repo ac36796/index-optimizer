@@ -1,3 +1,10 @@
+__pycache__/
+*.py[cod]
+
+*.egg-info/
+*.egg
+
 .venv
 .vscode
 *.bak
+.ipynb_checkpoints/
