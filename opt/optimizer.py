@@ -46,6 +46,46 @@ class Optimizer:
              np.zeros((n, n))],
         ]
 
+    @property
+    def tickers(self) -> List[str]:
+        return self._tickers
+
+    @property
+    def cov(self) -> np.ndarray:
+        return self._cov
+
+    @property
+    def x0(self) -> np.ndarray | None:
+        return self._x0
+
+    @property
+    def signal(self) -> np.ndarray | None:
+        return self._signal
+
+    @property
+    def P(self) -> List[List[np.ndarray]]:
+        return self._P
+
+    @property
+    def A(self) -> List[List[np.ndarray]]:
+        return self._A
+
+    @property
+    def G(self) -> List[List[np.ndarray]]:
+        return self._G
+
+    @property
+    def q(self) -> List[np.ndarray]:
+        return self._q
+
+    @property
+    def b(self) -> List[np.ndarray]:
+        return self._b
+
+    @property
+    def h(self) -> List[np.ndarray]:
+        return self._h
+
     def update_x0(self, x0: np.ndarray) -> Optimizer:
         self._x0 = x0
         return self
@@ -68,7 +108,7 @@ class Optimizer:
             self._h += h
         return self
 
-    def reset(self) -> None:
+    def reset(self) -> Optimizer:
         self._x0 = None
         self._signal = None
         self._A = []
